@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-may-2022 17:44:55 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="pojos.Categoria" table="categoria" catalog="conducaodb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="nome" type="string">
+            <column name="nome" length="60" not-null="true" />
+        </property>
+        <set name="exames" table="exame" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_categoria" not-null="true" />
+            </key>
+            <one-to-many class="pojos.Exame" />
+        </set>
+        <set name="inscricaos" table="inscricao" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_categoria" not-null="true" />
+            </key>
+            <one-to-many class="pojos.Inscricao" />
+        </set>
+    </class>
+</hibernate-mapping>

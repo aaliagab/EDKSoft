@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-may-2022 17:44:55 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="pojos.AlunoExame" table="aluno_exame" catalog="conducaodb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="aluno" class="pojos.Aluno" fetch="select">
+            <column name="id_aluno" not-null="true" />
+        </many-to-one>
+        <many-to-one name="exame" class="pojos.Exame" fetch="select">
+            <column name="id_exame" not-null="true" />
+        </many-to-one>
+        <property name="documento" type="string">
+            <column name="documento" not-null="true" />
+        </property>
+        <property name="registroCriminal" type="string">
+            <column name="registro_criminal" not-null="true" />
+        </property>
+        <property name="atestadoMedico" type="string">
+            <column name="atestado_medico" not-null="true" />
+        </property>
+        <property name="avaliacaoQuantitativa" type="double">
+            <column name="avaliacao_quantitativa" precision="3" not-null="true" />
+        </property>
+        <property name="avaliacaoQualitativa" type="string">
+            <column name="avaliacao_qualitativa" length="60" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

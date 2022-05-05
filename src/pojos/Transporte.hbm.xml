@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-may-2022 17:44:55 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="pojos.Transporte" table="transporte" catalog="conducaodb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="tipoTransporte" class="pojos.TipoTransporte" fetch="select">
+            <column name="id_tipo_trans" not-null="true" />
+        </many-to-one>
+        <property name="peso" type="double">
+            <column name="peso" precision="10" not-null="true" />
+        </property>
+        <property name="marca" type="string">
+            <column name="marca" length="60" not-null="true" />
+        </property>
+        <property name="modelo" type="string">
+            <column name="modelo" length="60" not-null="true" />
+        </property>
+        <property name="cor" type="string">
+            <column name="cor" length="60" not-null="true" />
+        </property>
+        <property name="matricula" type="string">
+            <column name="matricula" length="60" not-null="true" />
+        </property>
+        <property name="numCirculacao" type="string">
+            <column name="num_circulacao" length="60" not-null="true" />
+        </property>
+        <set name="alunos" table="aluno" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_transporte" not-null="true" />
+            </key>
+            <one-to-many class="pojos.Aluno" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-may-2022 17:44:55 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="pojos.Pessoa" table="pessoa" catalog="conducaodb" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="residencia" class="pojos.Residencia" fetch="select">
+            <column name="id_endereco" not-null="true" />
+        </many-to-one>
+        <property name="nome" type="string">
+            <column name="nome" length="60" not-null="true" />
+        </property>
+        <property name="sobrenome" type="string">
+            <column name="sobrenome" length="60" not-null="true" />
+        </property>
+        <property name="passaporte" type="string">
+            <column name="passaporte" length="60" not-null="true" />
+        </property>
+        <property name="genero" type="string">
+            <column name="genero" length="60" not-null="true" />
+        </property>
+        <property name="dataNascimento" type="date">
+            <column name="data_nascimento" length="10" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="120" />
+        </property>
+        <property name="telefone" type="string">
+            <column name="telefone" length="60" not-null="true" />
+        </property>
+        <one-to-one name="aluno" class="pojos.Aluno"></one-to-one>
+        <one-to-one name="professor" class="pojos.Professor"></one-to-one>
+        <one-to-one name="funcionario" class="pojos.Funcionario"></one-to-one>
+        <one-to-one name="instructor" class="pojos.Instructor"></one-to-one>
+    </class>
+</hibernate-mapping>
