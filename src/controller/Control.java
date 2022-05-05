@@ -1,5 +1,6 @@
 package controller;
 
+import dao.AcessoDAOImplement;
 import dao.AlunoExameDAOImplement;
 import dao.ProfessorDAOImplement;
 import dao.ResidenciaDAOImplement;
@@ -22,6 +23,7 @@ import dao.CargoDAOImplement;
 import dao.CategoriaDAOImplement;
 import dao.ExameDAOImplement;
 import dao.InscricaoDAOImplement;
+import dao.UsuarioDAOImplement;
 
 /**
  *
@@ -50,9 +52,13 @@ public class Control {
     private CategoriaDAOImplement CategoriaDAO;
     private ExameDAOImplement ExameDAO;
     private InscricaoDAOImplement InscricaoDAO;
+    private AcessoDAOImplement AcessoDAO;
+    private UsuarioDAOImplement UsuarioDAO;
     private Toast msg;
 
     public Control() {
+        UsuarioDAO = new UsuarioDAOImplement();
+        AcessoDAO = new AcessoDAOImplement();
         AlunoExameDAO = new AlunoExameDAOImplement();
         ProfessorDAO = new ProfessorDAOImplement();
         ResidenciaDAO = new ResidenciaDAOImplement();
@@ -78,6 +84,14 @@ public class Control {
 
     public AlunoExameDAOImplement getAlunoExameDAO() {
         return AlunoExameDAO;
+    }
+
+    public AcessoDAOImplement getAcessoDAO() {
+        return AcessoDAO;
+    }
+
+    public UsuarioDAOImplement getUsuarioDAO() {
+        return UsuarioDAO;
     }
 
     public ProfessorDAOImplement getProfessorDAO() {
