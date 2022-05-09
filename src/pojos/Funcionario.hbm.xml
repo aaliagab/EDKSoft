@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 05-may-2022 17:44:55 by Hibernate Tools 4.3.1 -->
+<!-- Generated 09-may-2022 18:22:45 by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="pojos.Funcionario" table="funcionario" catalog="conducaodb" optimistic-lock="version">
         <id name="id" type="int">
@@ -14,11 +14,13 @@
             <column name="id_cargo" not-null="true" />
         </many-to-one>
         <one-to-one name="pessoa" class="pojos.Pessoa" constrained="true"></one-to-one>
+        <one-to-one name="professor" class="pojos.Professor"></one-to-one>
         <set name="usuarios" table="usuario" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_funcionario" />
             </key>
             <one-to-many class="pojos.Usuario" />
         </set>
+        <one-to-one name="instructor" class="pojos.Instructor"></one-to-one>
     </class>
 </hibernate-mapping>

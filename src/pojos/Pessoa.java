@@ -1,5 +1,5 @@
 package pojos;
-// Generated 05-may-2022 17:44:55 by Hibernate Tools 4.3.1
+// Generated 09-may-2022 18:22:43 by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -20,24 +20,21 @@ public class Pessoa  implements java.io.Serializable {
      private String email;
      private String telefone;
      private Aluno aluno;
-     private Professor professor;
      private Funcionario funcionario;
-     private Instructor instructor;
 
     public Pessoa() {
     }
 
 	
-    public Pessoa(Residencia residencia, String nome, String sobrenome, String passaporte, String genero, Date dataNascimento, String telefone) {
+    public Pessoa(Residencia residencia, String nome, String sobrenome, String genero, Date dataNascimento, String telefone) {
         this.residencia = residencia;
         this.nome = nome;
         this.sobrenome = sobrenome;
-        this.passaporte = passaporte;
         this.genero = genero;
         this.dataNascimento = dataNascimento;
         this.telefone = telefone;
     }
-    public Pessoa(Residencia residencia, String nome, String sobrenome, String passaporte, String genero, Date dataNascimento, String email, String telefone, Aluno aluno, Professor professor, Funcionario funcionario, Instructor instructor) {
+    public Pessoa(Residencia residencia, String nome, String sobrenome, String passaporte, String genero, Date dataNascimento, String email, String telefone, Aluno aluno, Funcionario funcionario) {
        this.residencia = residencia;
        this.nome = nome;
        this.sobrenome = sobrenome;
@@ -47,9 +44,7 @@ public class Pessoa  implements java.io.Serializable {
        this.email = email;
        this.telefone = telefone;
        this.aluno = aluno;
-       this.professor = professor;
        this.funcionario = funcionario;
-       this.instructor = instructor;
     }
    
     public Integer getId() {
@@ -122,26 +117,12 @@ public class Pessoa  implements java.io.Serializable {
     public void setAluno(Aluno aluno) {
         this.aluno = aluno;
     }
-    public Professor getProfessor() {
-        return this.professor;
-    }
-    
-    public void setProfessor(Professor professor) {
-        this.professor = professor;
-    }
     public Funcionario getFuncionario() {
         return this.funcionario;
     }
     
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
-    }
-    public Instructor getInstructor() {
-        return this.instructor;
-    }
-    
-    public void setInstructor(Instructor instructor) {
-        this.instructor = instructor;
     }
 
 

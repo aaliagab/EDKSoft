@@ -114,10 +114,7 @@ public class Main extends javax.swing.JFrame {
             Acesso director = control.getAcessoDAO().getByNome("director");
             Acesso professor = control.getAcessoDAO().getByNome("professor");
             Acesso secretaria = control.getAcessoDAO().getByNome("secretaria");
-            if (admin == null) {
-                admin = new Acesso("admin");
-                control.getAcessoDAO().save(admin);
-            }
+            
             if (director == null) {
                 director = new Acesso("director");
                 control.getAcessoDAO().save(director);
@@ -214,10 +211,10 @@ public class Main extends javax.swing.JFrame {
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         menuPessoas1 = new javax.swing.JMenu();
-        jMenuItem17 = new javax.swing.JMenuItem();
-        menuItemGenero1 = new javax.swing.JMenuItem();
-        menuItemProvincia1 = new javax.swing.JMenuItem();
-        menuItemMunicipio1 = new javax.swing.JMenuItem();
+        menuItemTipo = new javax.swing.JMenuItem();
+        menuItemTipoTransporte = new javax.swing.JMenuItem();
+        menuItemTipoInscricao = new javax.swing.JMenuItem();
+        menuItemCategoria = new javax.swing.JMenuItem();
         menuPessoas = new javax.swing.JMenu();
         menuItemGenero = new javax.swing.JMenuItem();
         menuItemProvincia = new javax.swing.JMenuItem();
@@ -283,45 +280,45 @@ public class Main extends javax.swing.JFrame {
         menuPessoas1.setText("Tipos e categorias");
         menuPessoas1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
 
-        jMenuItem17.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
-        jMenuItem17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_classroom_28px.png"))); // NOI18N
-        jMenuItem17.setText("Tipo exame o aula");
-        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+        menuItemTipo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        menuItemTipo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_classroom_28px.png"))); // NOI18N
+        menuItemTipo.setText("Tipo exame o aula");
+        menuItemTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem17ActionPerformed(evt);
+                menuItemTipoActionPerformed(evt);
             }
         });
-        menuPessoas1.add(jMenuItem17);
+        menuPessoas1.add(menuItemTipo);
 
-        menuItemGenero1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
-        menuItemGenero1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_transportation_28px.png"))); // NOI18N
-        menuItemGenero1.setText("Tipo de transporte");
-        menuItemGenero1.addActionListener(new java.awt.event.ActionListener() {
+        menuItemTipoTransporte.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        menuItemTipoTransporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_transportation_28px.png"))); // NOI18N
+        menuItemTipoTransporte.setText("Tipo de transporte");
+        menuItemTipoTransporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemGenero1ActionPerformed(evt);
+                menuItemTipoTransporteActionPerformed(evt);
             }
         });
-        menuPessoas1.add(menuItemGenero1);
+        menuPessoas1.add(menuItemTipoTransporte);
 
-        menuItemProvincia1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
-        menuItemProvincia1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_sign_up_28px.png"))); // NOI18N
-        menuItemProvincia1.setText("Tipo de inscrição");
-        menuItemProvincia1.addActionListener(new java.awt.event.ActionListener() {
+        menuItemTipoInscricao.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        menuItemTipoInscricao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_sign_up_28px.png"))); // NOI18N
+        menuItemTipoInscricao.setText("Tipo de inscrição");
+        menuItemTipoInscricao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemProvincia1ActionPerformed(evt);
+                menuItemTipoInscricaoActionPerformed(evt);
             }
         });
-        menuPessoas1.add(menuItemProvincia1);
+        menuPessoas1.add(menuItemTipoInscricao);
 
-        menuItemMunicipio1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
-        menuItemMunicipio1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_categorize_28px.png"))); // NOI18N
-        menuItemMunicipio1.setText("Categorias");
-        menuItemMunicipio1.addActionListener(new java.awt.event.ActionListener() {
+        menuItemCategoria.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        menuItemCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_categorize_28px.png"))); // NOI18N
+        menuItemCategoria.setText("Categorias");
+        menuItemCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemMunicipio1ActionPerformed(evt);
+                menuItemCategoriaActionPerformed(evt);
             }
         });
-        menuPessoas1.add(menuItemMunicipio1);
+        menuPessoas1.add(menuItemCategoria);
 
         jMenu1.add(menuPessoas1);
 
@@ -867,28 +864,52 @@ public class Main extends javax.swing.JFrame {
 //        }
     }//GEN-LAST:event_menuItemFuncionario1ActionPerformed
 
-    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem17ActionPerformed
+    private void menuItemTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTipoActionPerformed
+        TipoDialog obj = new TipoDialog(this, true);
+        obj.setVisible(true);
+    }//GEN-LAST:event_menuItemTipoActionPerformed
 
-    private void menuItemGenero1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGenero1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_menuItemGenero1ActionPerformed
+    private void menuItemTipoTransporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTipoTransporteActionPerformed
+        TipoTransporteDialog obj = new TipoTransporteDialog(this, true);
+        obj.setVisible(true);
+    }//GEN-LAST:event_menuItemTipoTransporteActionPerformed
 
-    private void menuItemProvincia1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemProvincia1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_menuItemProvincia1ActionPerformed
+    private void menuItemTipoInscricaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTipoInscricaoActionPerformed
+        TipoInscricaoDialog obj = new TipoInscricaoDialog(this, true);
+        obj.setVisible(true);
+    }//GEN-LAST:event_menuItemTipoInscricaoActionPerformed
 
-    private void menuItemMunicipio1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemMunicipio1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_menuItemMunicipio1ActionPerformed
+    private void menuItemCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCategoriaActionPerformed
+        CategoriaDialog obj = new CategoriaDialog(this, true);
+        obj.setVisible(true);
+    }//GEN-LAST:event_menuItemCategoriaActionPerformed
 
     private void menuItemFuncionario2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemFuncionario2ActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (control.getBairroDAO().findAll().size() == 0) {
+                msg = new Toast("Bairro deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else {
+                ProfessorDialog obj = new ProfessorDialog(this, true);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_menuItemFuncionario2ActionPerformed
 
     private void menuItemFuncionario3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemFuncionario3ActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (control.getBairroDAO().findAll().size() == 0) {
+                msg = new Toast("Bairro deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else {
+                InstructorDialog obj = new InstructorDialog(this, true);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_menuItemFuncionario3ActionPerformed
 
     /**
@@ -942,7 +963,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
-    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem28;
     private javax.swing.JMenuItem jMenuItem3;
@@ -953,17 +973,18 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JMenu menuImpressoes;
     private javax.swing.JMenuItem menuItemBairros;
+    private javax.swing.JMenuItem menuItemCategoria;
     private javax.swing.JMenuItem menuItemFuncionario;
     private javax.swing.JMenuItem menuItemFuncionario1;
     private javax.swing.JMenuItem menuItemFuncionario2;
     private javax.swing.JMenuItem menuItemFuncionario3;
     private javax.swing.JMenuItem menuItemGenero;
-    private javax.swing.JMenuItem menuItemGenero1;
     private javax.swing.JMenuItem menuItemMunicipio;
-    private javax.swing.JMenuItem menuItemMunicipio1;
     private javax.swing.JMenuItem menuItemNatureza;
     private javax.swing.JMenuItem menuItemProvincia;
-    private javax.swing.JMenuItem menuItemProvincia1;
+    private javax.swing.JMenuItem menuItemTipo;
+    private javax.swing.JMenuItem menuItemTipoInscricao;
+    private javax.swing.JMenuItem menuItemTipoTransporte;
     private javax.swing.JMenu menuPessoas;
     private javax.swing.JMenu menuPessoas1;
     private javax.swing.JMenu menuSeguranca;

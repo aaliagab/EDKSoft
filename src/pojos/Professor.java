@@ -1,5 +1,5 @@
 package pojos;
-// Generated 05-may-2022 17:44:55 by Hibernate Tools 4.3.1
+// Generated 09-may-2022 18:22:43 by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,18 +12,18 @@ public class Professor  implements java.io.Serializable {
 
 
      private int id;
-     private Pessoa pessoa;
+     private Funcionario funcionario;
      private Set<Aula> aulas = new HashSet<Aula>(0);
 
     public Professor() {
     }
 
 	
-    public Professor(Pessoa pessoa) {
-        this.pessoa = pessoa;
+    public Professor(Funcionario funcionario) {
+        this.funcionario = funcionario;
     }
-    public Professor(Pessoa pessoa, Set<Aula> aulas) {
-       this.pessoa = pessoa;
+    public Professor(Funcionario funcionario, Set<Aula> aulas) {
+       this.funcionario = funcionario;
        this.aulas = aulas;
     }
    
@@ -34,12 +34,12 @@ public class Professor  implements java.io.Serializable {
     public void setId(int id) {
         this.id = id;
     }
-    public Pessoa getPessoa() {
-        return this.pessoa;
+    public Funcionario getFuncionario() {
+        return this.funcionario;
     }
     
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
     }
     public Set<Aula> getAulas() {
         return this.aulas;
