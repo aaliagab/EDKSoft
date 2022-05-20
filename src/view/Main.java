@@ -706,8 +706,17 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemBairrosActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-//        IvaDialog obj = new IvaDialog(this, true);
-//        obj.setVisible(true);
+        try {
+            if (control.getTipoTransporteDAO().findAll().size() == 0) {
+                msg = new Toast("Tipo de transporte deve ser inserido antes", 2000);
+                msg.showToast();
+            } else {
+                TransporteDialog obj = new TransporteDialog(this, true);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
@@ -848,20 +857,20 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     private void menuItemFuncionario1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemFuncionario1ActionPerformed
-//        try {
-//            if (control.getBairroDAO().findAll().size() == 0) {
-//                msg = new Toast("Bairro deve ser inserido antes.", 2000);
-//                msg.showToast();
-//            } else if (control.getGeneroDAO().findAll().size() == 0) {
-//                msg = new Toast("Género deve ser inserido antes.", 2000);
-//                msg.showToast();
-//            } else {
-//                ClienteDialog obj = new ClienteDialog(this, true);
-//                obj.setVisible(true);
-//            }
-//        } catch (BussinessException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            if (control.getBairroDAO().findAll().size() == 0) {
+                msg = new Toast("Bairro deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else if (control.getTransporteDAO().findAll().size() == 0) {
+                msg = new Toast("Transporte deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else {
+                AlunoDialog obj = new AlunoDialog(this, true);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_menuItemFuncionario1ActionPerformed
 
     private void menuItemTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemTipoActionPerformed

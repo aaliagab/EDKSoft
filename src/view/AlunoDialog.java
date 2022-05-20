@@ -7,7 +7,7 @@ package view;
 
 import controller.Toast;
 import dao.BussinessException;
-import dao.FuncionarioDAOImplement;
+import dao.AlunoDAOImplement;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import pojos.Bairro;
-import pojos.Cargo;
+import pojos.Transporte;
 import pojos.Residencia;
-import pojos.Funcionario;
+import pojos.Aluno;
 import pojos.Municipio;
 import pojos.Pessoa;
 import pojos.Provincia;
@@ -29,7 +29,7 @@ import pojos.Provincia;
  *
  * @author
  */
-public class FuncionarioDialog extends javax.swing.JDialog {
+public class AlunoDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form ClienteDialog
@@ -38,18 +38,18 @@ public class FuncionarioDialog extends javax.swing.JDialog {
             busca2 = "Busca por nome";
     Main pai;
     Toast msg;
-    List<Funcionario> list_atual;
+    List<Aluno> list_atual;
     List<Municipio> muns;
     List<Bairro> bairros;
-    List<Cargo> cargos;
+    List<Transporte> transportes;
     List<Provincia> provincias;
-    FuncionarioDAOImplement daoObject;
+    AlunoDAOImplement daoObject;
 
-    public FuncionarioDialog(java.awt.Frame parent, boolean modal) {
+    public AlunoDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         pai = (Main) parent;
-        daoObject = pai.control.getFuncionarioDAO();
+        daoObject = pai.control.getAlunoDAO();
         this.setLocationRelativeTo(null);
         //Atualizar tabela
         updateJTable();
@@ -57,7 +57,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         data.setDate(new Date());
         preecherCombo();
 
-        String toolTip = "Funcionario";
+        String toolTip = "Aluno";
         jButton2.setToolTipText("Inserir " + toolTip);
         jButton4.setToolTipText("Apagar seleção de " + toolTip);
         botao_actualizar1.setToolTipText("Atualizar " + toolTip);
@@ -71,6 +71,8 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         email.setText("");
         rua.setText("");
         numero.setText("");
+        ficha.setText("");
+        cartao.setText("");
         data.setDate(new Date());
     }
 
@@ -78,10 +80,10 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         try {
             muns = new ArrayList<>();
             provincias = pai.control.getProvinciaDAO().findAll();
-            cargos = pai.control.getCargoDAO().findAll();
+            transportes = pai.control.getTransporteDAO().findAll();
             bairros = new ArrayList<>();
-            for (Cargo obj : cargos) {
-                comboCargo.addItem(obj.getNome());
+            for (Transporte obj : transportes) {
+                comboTrans.addItem(obj.getMarca()+" / "+obj.getMatricula());
             }
             for (Provincia obj : provincias) {
                 comboProv.addItem(obj.getNome());
@@ -106,16 +108,16 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         }
     }
 
-    public void addRowTableModel(DefaultTableModel model, Funcionario obj) {
+    public void addRowTableModel(DefaultTableModel model, Aluno obj) {
         model.addRow(new Object[]{
             obj.getPessoa().getNome()+" "+obj.getPessoa().getSobrenome(),
             obj.getPessoa().getResidencia().getBairro().getMunicipio().getProvincia().getNome(),
             obj.getPessoa().getResidencia().getBairro().getMunicipio().getNome(),
             obj.getPessoa().getResidencia().getBairro().getNome(),
             obj.getPessoa().getResidencia().getRua(),
-            obj.getPessoa().getGenero(),
             obj.getPessoa().getTelefone(),
-            obj.getPessoa().getEmail() == null ? "" : obj.getPessoa().getEmail()
+            obj.getFichaRequerimento(),
+            obj.getCartaoVacina()
         });
     }
 
@@ -124,7 +126,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         model.setNumRows(0);
         try {
             list_atual = daoObject.findAll();
-            for (Funcionario obj : list_atual) {
+            for (Aluno obj : list_atual) {
                 addRowTableModel(model, obj);
             }
         } catch (BussinessException ex) {
@@ -132,19 +134,21 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         }
     }
 
-    public void updateJTableBusca(List<Funcionario> list) {
+    public void updateJTableBusca(List<Aluno> list) {
         DefaultTableModel model = (DefaultTableModel) tabela.getModel();
         model.setNumRows(0);
-        for (Funcionario obj : list) {
+        for (Aluno obj : list) {
             addRowTableModel(model, obj);
         }
     }
 
-    public void editar(Funcionario obj) {
+    public void editar(Aluno obj) {
         if (!nome.getText().equals("")
                 && !sobrenome.getText().equals("")
                 && !telefone.getText().equals("(+   )   -   -   ")
                 && data.getDate()!=null
+                && !ficha.getText().equals("")
+                && !cartao.getText().equals("")
                 && !rua.getText().equals("")) {
             String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -170,8 +174,10 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                     obj.getPessoa().setDataNascimento(data.getDate());
                     pai.control.getPessoaDAO().update(obj.getPessoa());
                     
-                    //dados func
-                    obj.setCargo(cargos.get(comboCargo.getSelectedIndex()));
+                    //dados aluno
+                    obj.setTransporte(transportes.get(comboTrans.getSelectedIndex()));
+                    obj.setFichaRequerimento(ficha.getText());
+                    obj.setCartaoVacina(cartao.getText());
                     daoObject.update(obj);
                     
                     updateJTable();
@@ -240,14 +246,18 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         numero = new javax.swing.JTextField();
         data = new com.toedter.calendar.JDateChooser();
         jLabel13 = new javax.swing.JLabel();
-        comboCargo = new javax.swing.JComboBox<>();
+        comboTrans = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         sobrenome = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         passaporte = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        ficha = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        cartao = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("GERENCIAR FUNCIONÁRIOS");
+        setTitle("GERENCIAR ALUNOS");
 
         tabela.setAutoCreateRowSorter(true);
         tabela.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
@@ -256,7 +266,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Nome", "Província", "Município", "Bairro", "Rua", "Gênero", "Telefone", "Email"
+                "Nome", "Província", "Município", "Bairro", "Rua", "Telefone", "Ficha Requerimento", "Cartão Vacina"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -411,7 +421,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
-        jLabel13.setText("Cargo:");
+        jLabel13.setText("Transporte:");
 
         jLabel5.setText("Sobrenome:");
 
@@ -420,6 +430,14 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         jLabel6.setText("Passaporte:");
 
         passaporte.setName("nome"); // NOI18N
+
+        jLabel7.setText("Ficha R.:");
+
+        ficha.setName("nome"); // NOI18N
+
+        jLabel10.setText("Cartão V.:");
+
+        cartao.setName("nome"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -442,13 +460,12 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                                 .addComponent(busca_nome, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel1)
                                     .addComponent(jLabel13))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(comboCargo, 0, 164, Short.MAX_VALUE)
+                                    .addComponent(comboTrans, 0, 164, Short.MAX_VALUE)
                                     .addComponent(nome))
                                 .addGap(40, 40, 40)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -466,14 +483,24 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(passaporte)
                                     .addComponent(comboGenero, 0, 145, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(telefone, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel9)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel7))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(ficha)
+                                    .addComponent(telefone, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jLabel9))
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cartao)
+                                    .addComponent(email, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))))
                         .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
@@ -502,7 +529,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel13)
-                                .addComponent(comboCargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(comboTrans, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel2)
                                 .addComponent(data, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -514,9 +541,16 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                             .addComponent(botao_actualizar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(passaporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(cartao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel10))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(ficha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel7))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(passaporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel6)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -528,7 +562,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -548,7 +582,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
             int[] rows = tabela.getSelectedRows();
             if (rows.length > 0) {
                 if (rows.length == 1) {
-                    Funcionario obj = list_atual.get(rows[0]);
+                    Aluno obj = list_atual.get(rows[0]);
                     editar(obj);
                 } else {
                     pai.control.messageUmaLinha();
@@ -560,10 +594,10 @@ public class FuncionarioDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_botao_actualizar1ActionPerformed
 
     private void busca_nomeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_busca_nomeKeyPressed
-        List<Funcionario> list = new ArrayList<>();
+        List<Aluno> list = new ArrayList<>();
         updateJTable();
         boolean flag = false;
-        for (Funcionario list1 : list_atual) {
+        for (Aluno list1 : list_atual) {
             if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE
                     && !list1.getPessoa().getNome().toUpperCase().contains(
                             (busca_nome.getText().substring(0, busca_nome.getText().length() - 1)).toUpperCase()
@@ -619,6 +653,8 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                 || sobrenome.getText().equals("")
                 || data.getDate()==null
                 || telefone.getText().equals("(+   )   -   -   ")
+                || ficha.getText().equals("")
+                || cartao.getText().equals("")
                 || rua.getText().equals("")) {
             pai.control.messageFieldEmpty();
         } else {
@@ -648,9 +684,11 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                     obj.setResidencia(dir);
                     pai.control.getPessoaDAO().save(obj);
 
-                    Funcionario fun = new Funcionario();
+                    Aluno fun = new Aluno();
                     fun.setPessoa(obj);
-                    fun.setCargo(cargos.get(comboCargo.getSelectedIndex()));
+                    fun.setTransporte(transportes.get(comboTrans.getSelectedIndex()));
+                    fun.setFichaRequerimento(ficha.getText());
+                    fun.setCartaoVacina(cartao.getText());
                     daoObject.save(fun);
                     updateJTable();
                     pai.control.messageOperacaoSucesso();
@@ -663,11 +701,13 @@ public class FuncionarioDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tabelaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaMouseClicked
-        Funcionario obj = list_atual.get(tabela.getSelectedRow());
+        Aluno obj = list_atual.get(tabela.getSelectedRow());
         nome.setText(obj.getPessoa().getNome());
         sobrenome.setText(obj.getPessoa().getSobrenome());
         telefone.setText(obj.getPessoa().getTelefone());
         email.setText(obj.getPessoa().getEmail());
+        ficha.setText(obj.getFichaRequerimento());
+        cartao.setText(obj.getCartaoVacina());
         passaporte.setText(obj.getPessoa().getPassaporte());
         rua.setText(obj.getPessoa().getResidencia().getRua());
         numero.setText(obj.getPessoa().getResidencia().getNumCasa());
@@ -675,7 +715,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         data.setDate(obj.getPessoa().getDataNascimento());
         comboProv.setSelectedItem(obj.getPessoa().getResidencia().getBairro().getMunicipio().getProvincia().getNome());
         comboMun.setSelectedItem(obj.getPessoa().getResidencia().getBairro().getMunicipio().getNome());
-        comboCargo.setSelectedItem(obj.getCargo().getNome());
+        comboTrans.setSelectedItem(obj.getTransporte().getMarca()+ " / "+obj.getTransporte().getMatricula());
         comboBairro.setSelectedItem(obj.getPessoa().getResidencia().getBairro().getNome());        
 
     }//GEN-LAST:event_tabelaMouseClicked
@@ -721,14 +761,30 @@ public class FuncionarioDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FuncionarioDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlunoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FuncionarioDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlunoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FuncionarioDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlunoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FuncionarioDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AlunoDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -750,7 +806,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                FuncionarioDialog dialog = new FuncionarioDialog(new javax.swing.JFrame(), true);
+                AlunoDialog dialog = new AlunoDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -765,16 +821,19 @@ public class FuncionarioDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botao_actualizar1;
     private javax.swing.JTextField busca_nome;
+    private javax.swing.JTextField cartao;
     private javax.swing.JComboBox<String> comboBairro;
-    private javax.swing.JComboBox<String> comboCargo;
     private javax.swing.JComboBox<String> comboGenero;
     private javax.swing.JComboBox<String> comboMun;
     private javax.swing.JComboBox<String> comboProv;
+    private javax.swing.JComboBox<String> comboTrans;
     private com.toedter.calendar.JDateChooser data;
     private javax.swing.JTextField email;
+    private javax.swing.JTextField ficha;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -785,6 +844,7 @@ public class FuncionarioDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
