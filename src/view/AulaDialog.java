@@ -7,7 +7,7 @@ package view;
 
 import controller.Toast;
 import dao.BussinessException;
-import dao.TransporteDAOImplement;
+import dao.AulaDAOImplement;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -17,67 +17,76 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import pojos.Transporte;
-import pojos.TipoTransporte;
+import pojos.Aula;
+import pojos.Professor;
+import pojos.Tipo;
 
 /**
  *
  * @author
  */
-public class TransporteDialog extends javax.swing.JDialog {
+public class AulaDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form ClienteDialog
      */
     private final String busca1 = "Busca por código",
-            busca2 = "Busca por matricula";
+            busca2 = "Busca por professor";
     Main pai;
     Toast msg;
-    List<Transporte> list_atual;
-    List<TipoTransporte> objs;
-    TransporteDAOImplement daoObject;
+    List<Aula> list_atual;
+    List<Tipo> tipos;
+    List<Professor> professores;
+    AulaDAOImplement daoObject;
 
-    public TransporteDialog(java.awt.Frame parent, boolean modal) {
+    public AulaDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         pai = (Main) parent;
-        daoObject = pai.control.getTransporteDAO();
+        daoObject = pai.control.getAulaDAO();
         this.setLocationRelativeTo(null);
         //Atualizar tabela
         updateJTable();
         AutoCompleteDecorator.decorate(combo);
         preecherCombo();
+        data.setDate(new Date());
+        data.setMinSelectableDate(new Date());
 
-        String toolTip = "Transporte";
+        String toolTip = "Aula";
         jButton2.setToolTipText("Inserir " + toolTip);
         jButton4.setToolTipText("Apagar seleção de " + toolTip);
         botao_actualizar1.setToolTipText("Atualizar " + toolTip);
     }
 
     public void inicializarForm() {
-        matricula.setText("");
-        modelo.setText("");
-        circulacao.setText("");
-        cor.setText("");
-        marca.setText("");
-        peso.setText("");
+        hora.setText("");
+        duracao.setText("");
+        sumario.setText("");
+        data.setDate(new Date());
+        numero.setText("");
     }
 
-    public void addRowTableModel(DefaultTableModel model, Transporte obj) {
+    public void addRowTableModel(DefaultTableModel model, Aula obj) {
         model.addRow(new Object[]{
-            obj.getMatricula(),
-            obj.getModelo(),
-            obj.getNumCirculacao(),
-            obj.getPeso(),
-            obj.getTipoTransporte().getNome()
+            obj.getProfessor().getFuncionario().getPessoa().getNome() + " " + obj.getProfessor().getFuncionario().getPessoa().getSobrenome(),
+            obj.getNumero()<10?"0"+obj.getNumero():obj.getNumero()+"",
+            obj.getTipo().getNome(),
+            obj.getDateAula(),
+            obj.getHoraInicio(),
+            obj.getDuracao()
         });
     }
 
     public void preecherCombo() {
         try {
-            objs = pai.control.getTipoTransporteDAO().findAll();
-            for (TipoTransporte obj : objs) {
+            tipos = pai.control.getTipoDAO().findAll();
+            for (Tipo obj : tipos) {
                 combo.addItem(obj.getNome());
+            }
+
+            professores = pai.control.getProfessorDAO().findAll();
+            for (Professor obj : professores) {
+                comboProf.addItem(obj.getFuncionario().getPessoa().getNome() + " " + obj.getFuncionario().getPessoa().getSobrenome());
             }
         } catch (BussinessException ex) {
             pai.control.messageErroBussiness(ex);
@@ -88,9 +97,9 @@ public class TransporteDialog extends javax.swing.JDialog {
         DefaultTableModel model = (DefaultTableModel) tabela.getModel();
         model.setNumRows(0);
         try {
-            List<Transporte> list = daoObject.findAll();
+            List<Aula> list = daoObject.findAll();
             list_atual = list;
-            for (Transporte obj : list) {
+            for (Aula obj : list) {
                 addRowTableModel(model, obj);
             }
         } catch (BussinessException ex) {
@@ -98,29 +107,28 @@ public class TransporteDialog extends javax.swing.JDialog {
         }
     }
 
-    public void updateJTableBusca(List<Transporte> list) {
+    public void updateJTableBusca(List<Aula> list) {
         DefaultTableModel model = (DefaultTableModel) tabela.getModel();
         model.setNumRows(0);
-        for (Transporte obj : list) {
+        for (Aula obj : list) {
             addRowTableModel(model, obj);
         }
     }
 
-    public void editar(Transporte obj) {
-        if (!matricula.getText().equals("") &&
-                !modelo.getText().equals("") &&
-                !marca.getText().equals("") &&
-                !cor.getText().equals("") &&
-                !peso.getText().equals("") &&
-                !circulacao.getText().equals("")) {
+    public void editar(Aula obj) {
+        if (!hora.getText().equals("  :  ")
+                && !duracao.getText().equals("  :  ")
+                && !numero.getText().equals("  ")
+                && data.getDate() != null
+                && !sumario.getText().equals("")) {
             try {
-                obj.setMatricula(matricula.getText());
-                obj.setModelo(modelo.getText());
-                obj.setNumCirculacao(circulacao.getText());
-                obj.setCor(cor.getText());
-                obj.setPeso(Double.parseDouble(peso.getText()));
-                obj.setMarca(marca.getText());
-                obj.setTipoTransporte(objs.get(combo.getSelectedIndex()));
+                obj.setDateAula(data.getDate());
+                obj.setSumario(sumario.getText());
+                obj.setNumero(Integer.parseInt(numero.getText()));
+                obj.setDuracao(duracao.getText());
+                obj.setHoraInicio(hora.getText());
+                obj.setProfessor(professores.get(comboProf.getSelectedIndex()));
+                obj.setTipo(tipos.get(combo.getSelectedIndex()));
                 daoObject.update(obj);
                 updateJTable();
                 inicializarForm();
@@ -162,7 +170,6 @@ public class TransporteDialog extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabela = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        matricula = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         busca_nome = new javax.swing.JTextField();
@@ -170,18 +177,20 @@ public class TransporteDialog extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         combo = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        modelo = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        circulacao = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        peso = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        sumario = new javax.swing.JTextArea();
+        hora = new javax.swing.JFormattedTextField();
+        duracao = new javax.swing.JFormattedTextField();
         jLabel6 = new javax.swing.JLabel();
-        marca = new javax.swing.JTextField();
+        numero = new javax.swing.JFormattedTextField();
+        data = new com.toedter.calendar.JDateChooser();
         jLabel7 = new javax.swing.JLabel();
-        cor = new javax.swing.JTextField();
+        comboProf = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("GERENCIAR TRANSPORTES");
+        setTitle("GERENCIAR AULAS");
 
         tabela.setAutoCreateRowSorter(true);
         tabela.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
@@ -190,11 +199,11 @@ public class TransporteDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Matricula", "Modelo", "Circulação", "Peso", "Tipo"
+                "Professor", "Numero de Aula", "Tipo", "Data", "Hora", "Duração"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -208,9 +217,7 @@ public class TransporteDialog extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(tabela);
 
-        jLabel1.setText("Matricula:");
-
-        matricula.setName("matricula"); // NOI18N
+        jLabel1.setText("Sumario:");
 
         jButton2.setText("Inserir");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -227,7 +234,7 @@ public class TransporteDialog extends javax.swing.JDialog {
         });
 
         busca_nome.setForeground(new java.awt.Color(153, 153, 153));
-        busca_nome.setText("Busca por matricula");
+        busca_nome.setText("Busca por professor");
         busca_nome.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 busca_nomeFocusGained(evt);
@@ -253,30 +260,37 @@ public class TransporteDialog extends javax.swing.JDialog {
 
         jLabel2.setText("Tipo:");
 
-        jLabel3.setText("Modelo:");
+        jLabel3.setText("Hora:");
 
-        modelo.setName("nome"); // NOI18N
+        jLabel4.setText("Duração:");
 
-        jLabel4.setText("Circulação:");
+        jLabel5.setText("Data:");
 
-        circulacao.setName("nome"); // NOI18N
+        sumario.setColumns(20);
+        sumario.setRows(5);
+        jScrollPane2.setViewportView(sumario);
 
-        jLabel5.setText("Peso:");
+        try {
+            hora.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##:##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
 
-        peso.setName("peso"); // NOI18N
-        peso.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                pesoKeyTyped(evt);
-            }
-        });
+        try {
+            duracao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##:##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
 
-        jLabel6.setText("Marca:");
+        jLabel6.setText("Numero:");
 
-        marca.setName("nome"); // NOI18N
+        try {
+            numero.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
 
-        jLabel7.setText("Cor:");
-
-        cor.setName("nome"); // NOI18N
+        jLabel7.setText("Professor:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -285,6 +299,7 @@ public class TransporteDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton2)
                         .addGap(14, 14, 14)
@@ -293,61 +308,65 @@ public class TransporteDialog extends javax.swing.JDialog {
                         .addComponent(botao_actualizar1))
                     .addComponent(busca_nome, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(hora)
+                            .addComponent(numero, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(matricula, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(marca, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(modelo, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(circulacao, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(peso, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
+                            .addComponent(duracao, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(data, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(comboProf, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(busca_nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(matricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(modelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(circulacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(peso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(marca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(cor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1)
+                                .addComponent(jLabel2)
+                                .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel6)
+                                .addComponent(numero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(comboProf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(data, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4)
+                            .addComponent(hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(duracao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(botao_actualizar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -376,22 +395,21 @@ public class TransporteDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (matricula.getText().equals("")||
-                modelo.getText().equals("") ||
-                marca.getText().equals("") ||
-                cor.getText().equals("") ||
-                peso.getText().equals("") ||
-                circulacao.getText().equals("")) {
+        if (hora.getText().equals("  :  ")
+                || duracao.getText().equals("  :  ")
+                || numero.getText().equals("  ")
+                || data.getDate() == null
+                || sumario.getText().equals("")) {
             pai.control.messageFieldEmpty();
         } else {
-            Transporte obj = new Transporte();
-            obj.setMatricula(matricula.getText());
-            obj.setModelo(modelo.getText());
-            obj.setNumCirculacao(circulacao.getText());
-            obj.setCor(cor.getText());
-            obj.setPeso(Double.parseDouble(peso.getText()));
-            obj.setMarca(marca.getText());
-            obj.setTipoTransporte(objs.get(combo.getSelectedIndex()));
+            Aula obj = new Aula();
+            obj.setDateAula(data.getDate());
+            obj.setSumario(sumario.getText());
+            obj.setNumero(Integer.parseInt(numero.getText()));
+            obj.setDuracao(duracao.getText());
+            obj.setHoraInicio(hora.getText());
+            obj.setProfessor(professores.get(comboProf.getSelectedIndex()));
+            obj.setTipo(tipos.get(combo.getSelectedIndex()));
 
             try {
                 daoObject.save(obj);
@@ -437,17 +455,17 @@ public class TransporteDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_busca_nomeFocusLost
 
     private void busca_nomeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_busca_nomeKeyPressed
-        List<Transporte> list = new ArrayList<>();
+        List<Aula> list = new ArrayList<>();
         updateJTable();
         boolean flag = false;
-        for (Transporte list1 : list_atual) {
+        for (Aula list1 : list_atual) {
             if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE
-                    && !list1.getMatricula().toUpperCase().contains(
+                    && !list1.getProfessor().getFuncionario().getPessoa().getNome().toUpperCase().contains(
                             (busca_nome.getText().substring(0, busca_nome.getText().length() - 1)).toUpperCase()
                     )) {
                 flag = true;
             } else if (evt.getKeyCode() != KeyEvent.VK_BACK_SPACE
-                    && !list1.getMatricula().toUpperCase().contains(
+                    && !list1.getProfessor().getFuncionario().getPessoa().getNome().toUpperCase().contains(
                             (busca_nome.getText() + evt.getKeyChar()).toUpperCase()
                     )) {
                 flag = true;
@@ -460,14 +478,14 @@ public class TransporteDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_busca_nomeKeyPressed
 
     private void tabelaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaMouseClicked
-        Transporte obj = list_atual.get(tabela.getSelectedRow());
-        matricula.setText(obj.getMatricula());
-        marca.setText(obj.getMarca());
-        modelo.setText(obj.getModelo());
-        cor.setText(obj.getCor());
-        peso.setText(obj.getPeso()+"");
-        circulacao.setText(obj.getNumCirculacao());
-        combo.setSelectedItem(obj.getTipoTransporte().getNome());
+        Aula obj = list_atual.get(tabela.getSelectedRow());
+        hora.setText(obj.getHoraInicio());
+        duracao.setText(obj.getDuracao());
+        numero.setText(obj.getNumero()<10?"0"+obj.getNumero():obj.getNumero()+"");
+        sumario.setText(obj.getSumario());
+        data.setDate(obj.getDateAula());
+        combo.setSelectedItem(obj.getTipo().getNome());
+        comboProf.setSelectedItem(obj.getProfessor().getFuncionario().getPessoa().getNome() + " " + obj.getProfessor().getFuncionario().getPessoa().getSobrenome());
     }//GEN-LAST:event_tabelaMouseClicked
 
     private void botao_actualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao_actualizar1ActionPerformed
@@ -477,7 +495,7 @@ public class TransporteDialog extends javax.swing.JDialog {
             int[] rows = tabela.getSelectedRows();
             if (rows.length > 0) {
                 if (rows.length == 1) {
-                    Transporte obj = list_atual.get(rows[0]);
+                    Aula obj = list_atual.get(rows[0]);
                     editar(obj);
                 } else {
                     pai.control.messageUmaLinha();
@@ -487,31 +505,6 @@ public class TransporteDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_botao_actualizar1ActionPerformed
-
-    private void pesoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pesoKeyTyped
-        //VALIDAÑÇAO DE DECIMALES
-        char car = evt.getKeyChar();
-        if ((car < '0' || car > '9') && (car != '.')) {
-            evt.consume();
-            msg = new Toast("Entrada inválida", 2000);
-            msg.showToast();
-        }
-        if (peso.getText().contains(".") && (car < '0' || car > '9')) {
-            evt.consume();
-            msg = new Toast("Entrada inválida", 2000);
-            msg.showToast();
-        }
-        if (peso.getText().length() == 0 && car == '.') {
-            evt.consume();
-            msg = new Toast("Entrada inválida", 2000);
-            msg.showToast();
-        }
-        if (peso.getText().length() > 15) {
-            evt.consume();
-            msg = new Toast("Comprimento excedido", 2000);
-            msg.showToast();
-        }
-    }//GEN-LAST:event_pesoKeyTyped
 
     /**
      * @param args the command line arguments
@@ -530,148 +523,23 @@ public class TransporteDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TransporteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TransporteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TransporteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TransporteDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+        
 
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                TransporteDialog dialog = new TransporteDialog(new javax.swing.JFrame(), true);
+                AulaDialog dialog = new AulaDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -686,9 +554,11 @@ public class TransporteDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botao_actualizar1;
     private javax.swing.JTextField busca_nome;
-    private javax.swing.JTextField circulacao;
     private javax.swing.JComboBox<String> combo;
-    private javax.swing.JTextField cor;
+    private javax.swing.JComboBox<String> comboProf;
+    private com.toedter.calendar.JDateChooser data;
+    private javax.swing.JFormattedTextField duracao;
+    private javax.swing.JFormattedTextField hora;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
@@ -700,10 +570,9 @@ public class TransporteDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField marca;
-    private javax.swing.JTextField matricula;
-    private javax.swing.JTextField modelo;
-    private javax.swing.JTextField peso;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JFormattedTextField numero;
+    private javax.swing.JTextArea sumario;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }

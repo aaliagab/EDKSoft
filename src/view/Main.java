@@ -754,17 +754,20 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-//        try {
-//            if (control.getTipoServicoDAO().findAll().size() == 0) {
-//                msg = new Toast("Tipo de serviço deve ser inserido antes", 2000);
-//                msg.showToast();
-//            } else {
-//                ServicoDialog obj = new ServicoDialog(this, false);
-//                obj.setVisible(true);
-//            }
-//        } catch (BussinessException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            if (control.getProfessorDAO().findAll().size() == 0) {
+                msg = new Toast("Professor deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else if (control.getTipoDAO().findAll().size() == 0) {
+                msg = new Toast("Tipo deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else {
+                AulaDialog obj = new AulaDialog(this, true);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
