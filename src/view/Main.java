@@ -687,8 +687,23 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void menuItemNaturezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNaturezaActionPerformed
-//        MetodoPagamentoDialog obj = new MetodoPagamentoDialog(this, true);
-//        obj.setVisible(true);
+        try {
+            if (control.getInstructorDAO().findAll().size() == 0) {
+                msg = new Toast("Instrutor deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else if (control.getTipoDAO().findAll().size() == 0) {
+                msg = new Toast("Tipo deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else if (control.getCategoriaDAO().findAll().size() == 0) {
+                msg = new Toast("Categoria deve ser inseridA antes.", 2000);
+                msg.showToast();
+            } else {
+                ExameDialog obj = new ExameDialog(this, true);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_menuItemNaturezaActionPerformed
 
     private void menuItemBairrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBairrosActionPerformed
@@ -749,8 +764,23 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-//        TipoServicoDialog obj = new TipoServicoDialog(this, true);
-//        obj.setVisible(true);
+        try {
+            if (control.getAlunoDAO().findAll().size() == 0) {
+                msg = new Toast("Aluno deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else if (control.getTipoInscricaoDAO().findAll().size() == 0) {
+                msg = new Toast("Tipo de inscrição deve ser inserido antes.", 2000);
+                msg.showToast();
+            } else if (control.getCategoriaDAO().findAll().size() == 0) {
+                msg = new Toast("Categoria deve ser inseridA antes.", 2000);
+                msg.showToast();
+            } else {
+                InscricaoDialog obj = new InscricaoDialog(this, true);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed

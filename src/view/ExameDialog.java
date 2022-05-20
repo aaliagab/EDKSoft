@@ -7,7 +7,7 @@ package view;
 
 import controller.Toast;
 import dao.BussinessException;
-import dao.AulaDAOImplement;
+import dao.ExameDAOImplement;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -17,33 +17,35 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import pojos.Aula;
-import pojos.Professor;
+import pojos.Categoria;
+import pojos.Exame;
+import pojos.Instructor;
 import pojos.Tipo;
 
 /**
  *
  * @author
  */
-public class AulaDialog extends javax.swing.JDialog {
+public class ExameDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form ClienteDialog
      */
     private final String busca1 = "Busca por código",
-            busca2 = "Busca por professor";
+            busca2 = "Busca por instrutor";
     Main pai;
     Toast msg;
-    List<Aula> list_atual;
+    List<Exame> list_atual;
     List<Tipo> tipos;
-    List<Professor> professores;
-    AulaDAOImplement daoObject;
+    List<Categoria> categorias;
+    List<Instructor> instructores;
+    ExameDAOImplement daoObject;
 
-    public AulaDialog(java.awt.Frame parent, boolean modal) {
+    public ExameDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         pai = (Main) parent;
-        daoObject = pai.control.getAulaDAO();
+        daoObject = pai.control.getExameDAO();
         this.setLocationRelativeTo(null);
         //Atualizar tabela
         updateJTable();
@@ -52,7 +54,7 @@ public class AulaDialog extends javax.swing.JDialog {
         data.setDate(new Date());
         data.setMinSelectableDate(new Date());
 
-        String toolTip = "Aula";
+        String toolTip = "Exame";
         jButton2.setToolTipText("Inserir " + toolTip);
         jButton4.setToolTipText("Apagar seleção de " + toolTip);
         botao_actualizar1.setToolTipText("Atualizar " + toolTip);
@@ -61,18 +63,16 @@ public class AulaDialog extends javax.swing.JDialog {
     public void inicializarForm() {
         hora.setText("");
         duracao.setText("");
-        sumario.setText("");
         data.setDate(new Date());
-        numero.setText("");
     }
 
-    public void addRowTableModel(DefaultTableModel model, Aula obj) {
+    public void addRowTableModel(DefaultTableModel model, Exame obj) {
         model.addRow(new Object[]{
-            obj.getProfessor().getFuncionario().getPessoa().getNome() + " " + obj.getProfessor().getFuncionario().getPessoa().getSobrenome(),
-            obj.getNumero()<10?"0"+obj.getNumero():obj.getNumero()+"",
-            obj.getTipo().getNome(),
-            obj.getDateAula(),
-            obj.getHoraInicio(),
+            obj.getInstructor().getFuncionario().getPessoa().getNome() + " " + obj.getInstructor().getFuncionario().getPessoa().getSobrenome(),
+            obj.getData(),
+            obj.getCategoria().getNome(),
+            obj.getTipo().getNome(),            
+            obj.getHora(),
             obj.getDuracao()
         });
     }
@@ -84,9 +84,14 @@ public class AulaDialog extends javax.swing.JDialog {
                 combo.addItem(obj.getNome());
             }
 
-            professores = pai.control.getProfessorDAO().findAll();
-            for (Professor obj : professores) {
-                comboProf.addItem(obj.getFuncionario().getPessoa().getNome() + " " + obj.getFuncionario().getPessoa().getSobrenome());
+            instructores = pai.control.getInstructorDAO().findAll();
+            for (Instructor obj : instructores) {
+                comboInst.addItem(obj.getFuncionario().getPessoa().getNome() + " " + obj.getFuncionario().getPessoa().getSobrenome());
+            }
+            
+            categorias = pai.control.getCategoriaDAO().findAll();
+            for (Categoria obj : categorias) {
+                comboCat.addItem(obj.getNome());
             }
         } catch (BussinessException ex) {
             pai.control.messageErroBussiness(ex);
@@ -97,9 +102,9 @@ public class AulaDialog extends javax.swing.JDialog {
         DefaultTableModel model = (DefaultTableModel) tabela.getModel();
         model.setNumRows(0);
         try {
-            List<Aula> list = daoObject.findAll();
+            List<Exame> list = daoObject.findAll();
             list_atual = list;
-            for (Aula obj : list) {
+            for (Exame obj : list) {
                 addRowTableModel(model, obj);
             }
         } catch (BussinessException ex) {
@@ -107,27 +112,24 @@ public class AulaDialog extends javax.swing.JDialog {
         }
     }
 
-    public void updateJTableBusca(List<Aula> list) {
+    public void updateJTableBusca(List<Exame> list) {
         DefaultTableModel model = (DefaultTableModel) tabela.getModel();
         model.setNumRows(0);
-        for (Aula obj : list) {
+        for (Exame obj : list) {
             addRowTableModel(model, obj);
         }
     }
 
-    public void editar(Aula obj) {
+    public void editar(Exame obj) {
         if (!hora.getText().equals("  :  ")
                 && !duracao.getText().equals("  :  ")
-                && !numero.getText().equals("  ")
-                && data.getDate() != null
-                && !sumario.getText().equals("")) {
+                && data.getDate() != null) {
             try {
-                obj.setDateAula(data.getDate());
-                obj.setSumario(sumario.getText());
-                obj.setNumero(Integer.parseInt(numero.getText()));
+                obj.setData(data.getDate());
+                obj.setCategoria(categorias.get(comboCat.getSelectedIndex()));
                 obj.setDuracao(duracao.getText());
-                obj.setHoraInicio(hora.getText());
-                obj.setProfessor(professores.get(comboProf.getSelectedIndex()));
+                obj.setHora(hora.getText());
+                obj.setInstructor(instructores.get(comboInst.getSelectedIndex()));
                 obj.setTipo(tipos.get(combo.getSelectedIndex()));
                 daoObject.update(obj);
                 updateJTable();
@@ -179,19 +181,16 @@ public class AulaDialog extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        sumario = new javax.swing.JTextArea();
         hora = new javax.swing.JFormattedTextField();
         duracao = new javax.swing.JFormattedTextField();
-        jLabel6 = new javax.swing.JLabel();
-        numero = new javax.swing.JFormattedTextField();
         data = new com.toedter.calendar.JDateChooser();
         jLabel7 = new javax.swing.JLabel();
-        comboProf = new javax.swing.JComboBox<>();
+        comboCat = new javax.swing.JComboBox<>();
         atribuir_aluno = new javax.swing.JButton();
+        comboInst = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("GERENCIAR AULAS");
+        setTitle("GERENCIAR EXAME");
 
         tabela.setAutoCreateRowSorter(true);
         tabela.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
@@ -200,7 +199,7 @@ public class AulaDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Professor", "Numero de Aula", "Tipo", "Data", "Hora", "Duração"
+                "Instrutor", "Data", "Categoria", "Tipo", "Hora", "Duração"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -218,7 +217,7 @@ public class AulaDialog extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(tabela);
 
-        jLabel1.setText("Sumario:");
+        jLabel1.setText("Instrutor:");
 
         jButton2.setText("Inserir");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -235,7 +234,7 @@ public class AulaDialog extends javax.swing.JDialog {
         });
 
         busca_nome.setForeground(new java.awt.Color(153, 153, 153));
-        busca_nome.setText("Busca por professor");
+        busca_nome.setText("Busca por instrutor");
         busca_nome.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 busca_nomeFocusGained(evt);
@@ -267,10 +266,6 @@ public class AulaDialog extends javax.swing.JDialog {
 
         jLabel5.setText("Data:");
 
-        sumario.setColumns(20);
-        sumario.setRows(5);
-        jScrollPane2.setViewportView(sumario);
-
         try {
             hora.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##:##")));
         } catch (java.text.ParseException ex) {
@@ -283,15 +278,7 @@ public class AulaDialog extends javax.swing.JDialog {
             ex.printStackTrace();
         }
 
-        jLabel6.setText("Numero:");
-
-        try {
-            numero.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-
-        jLabel7.setText("Professor:");
+        jLabel7.setText("Categoria:");
 
         atribuir_aluno.setText("Alunos");
         atribuir_aluno.setToolTipText("Actualizar dados");
@@ -322,69 +309,61 @@ public class AulaDialog extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(comboInst, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel3))
+                        .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(hora)
-                            .addComponent(numero, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
+                        .addComponent(data, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(comboCat, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel4))
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(duracao, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(data, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(comboProf, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(hora, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(duracao, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(busca_nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel7)
-                                .addComponent(comboProf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel1)
-                                .addComponent(jLabel2)
-                                .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel5)
-                                .addComponent(jLabel6)
-                                .addComponent(numero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(comboInst, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(data, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(duracao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(botao_actualizar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(atribuir_aluno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(63, 63, 63)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(botao_actualizar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(atribuir_aluno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel7)
+                        .addComponent(comboCat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(combo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel4)
+                        .addComponent(hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(duracao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -411,18 +390,15 @@ public class AulaDialog extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (hora.getText().equals("  :  ")
                 || duracao.getText().equals("  :  ")
-                || numero.getText().equals("  ")
-                || data.getDate() == null
-                || sumario.getText().equals("")) {
+                || data.getDate() == null) {
             pai.control.messageFieldEmpty();
         } else {
-            Aula obj = new Aula();
-            obj.setDateAula(data.getDate());
-            obj.setSumario(sumario.getText());
-            obj.setNumero(Integer.parseInt(numero.getText()));
+            Exame obj = new Exame();
+            obj.setData(data.getDate());
+            obj.setCategoria(categorias.get(comboCat.getSelectedIndex()));
             obj.setDuracao(duracao.getText());
-            obj.setHoraInicio(hora.getText());
-            obj.setProfessor(professores.get(comboProf.getSelectedIndex()));
+            obj.setHora(hora.getText());
+            obj.setInstructor(instructores.get(comboInst.getSelectedIndex()));
             obj.setTipo(tipos.get(combo.getSelectedIndex()));
 
             try {
@@ -469,17 +445,17 @@ public class AulaDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_busca_nomeFocusLost
 
     private void busca_nomeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_busca_nomeKeyPressed
-        List<Aula> list = new ArrayList<>();
+        List<Exame> list = new ArrayList<>();
         updateJTable();
         boolean flag = false;
-        for (Aula list1 : list_atual) {
+        for (Exame list1 : list_atual) {
             if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE
-                    && !list1.getProfessor().getFuncionario().getPessoa().getNome().toUpperCase().contains(
+                    && !list1.getInstructor().getFuncionario().getPessoa().getNome().toUpperCase().contains(
                             (busca_nome.getText().substring(0, busca_nome.getText().length() - 1)).toUpperCase()
                     )) {
                 flag = true;
             } else if (evt.getKeyCode() != KeyEvent.VK_BACK_SPACE
-                    && !list1.getProfessor().getFuncionario().getPessoa().getNome().toUpperCase().contains(
+                    && !list1.getInstructor().getFuncionario().getPessoa().getNome().toUpperCase().contains(
                             (busca_nome.getText() + evt.getKeyChar()).toUpperCase()
                     )) {
                 flag = true;
@@ -492,14 +468,13 @@ public class AulaDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_busca_nomeKeyPressed
 
     private void tabelaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaMouseClicked
-        Aula obj = list_atual.get(tabela.getSelectedRow());
-        hora.setText(obj.getHoraInicio());
+        Exame obj = list_atual.get(tabela.getSelectedRow());
+        hora.setText(obj.getHora());
         duracao.setText(obj.getDuracao());
-        numero.setText(obj.getNumero()<10?"0"+obj.getNumero():obj.getNumero()+"");
-        sumario.setText(obj.getSumario());
-        data.setDate(obj.getDateAula());
+        data.setDate(obj.getData());
         combo.setSelectedItem(obj.getTipo().getNome());
-        comboProf.setSelectedItem(obj.getProfessor().getFuncionario().getPessoa().getNome() + " " + obj.getProfessor().getFuncionario().getPessoa().getSobrenome());
+        comboCat.setSelectedItem(obj.getCategoria().getNome());
+        comboInst.setSelectedItem(obj.getInstructor().getFuncionario().getPessoa().getNome() + " " + obj.getInstructor().getFuncionario().getPessoa().getSobrenome());
     }//GEN-LAST:event_tabelaMouseClicked
 
     private void botao_actualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botao_actualizar1ActionPerformed
@@ -509,7 +484,7 @@ public class AulaDialog extends javax.swing.JDialog {
             int[] rows = tabela.getSelectedRows();
             if (rows.length > 0) {
                 if (rows.length == 1) {
-                    Aula obj = list_atual.get(rows[0]);
+                    Exame obj = list_atual.get(rows[0]);
                     editar(obj);
                 } else {
                     pai.control.messageUmaLinha();
@@ -524,9 +499,9 @@ public class AulaDialog extends javax.swing.JDialog {
         int[] rows = tabela.getSelectedRows();
         if (rows.length > 0) {
             if (rows.length == 1) {
-                Aula util = list_atual.get(rows[0]);
-                AlunoAulaDialog obj = new AlunoAulaDialog(pai, false);
-                obj.setAula(util);
+                Exame util = list_atual.get(rows[0]);
+                AlunoExameDialog obj = new AlunoExameDialog(pai, false);
+                obj.setExame(util);
                 obj.setVisible(true);
                 dispose();
             } else {
@@ -554,14 +529,16 @@ public class AulaDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ExameDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ExameDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ExameDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AulaDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ExameDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         
@@ -570,7 +547,7 @@ public class AulaDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AulaDialog dialog = new AulaDialog(new javax.swing.JFrame(), true);
+                ExameDialog dialog = new ExameDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -587,7 +564,8 @@ public class AulaDialog extends javax.swing.JDialog {
     private javax.swing.JButton botao_actualizar1;
     private javax.swing.JTextField busca_nome;
     private javax.swing.JComboBox<String> combo;
-    private javax.swing.JComboBox<String> comboProf;
+    private javax.swing.JComboBox<String> comboCat;
+    private javax.swing.JComboBox<String> comboInst;
     private com.toedter.calendar.JDateChooser data;
     private javax.swing.JFormattedTextField duracao;
     private javax.swing.JFormattedTextField hora;
@@ -598,13 +576,9 @@ public class AulaDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JFormattedTextField numero;
-    private javax.swing.JTextArea sumario;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }

@@ -14,17 +14,8 @@
         <many-to-one name="exame" class="pojos.Exame" fetch="select">
             <column name="id_exame" not-null="true" />
         </many-to-one>
-        <property name="documento" type="string">
-            <column name="documento" not-null="true" />
-        </property>
-        <property name="registroCriminal" type="string">
-            <column name="registro_criminal" not-null="true" />
-        </property>
-        <property name="atestadoMedico" type="string">
-            <column name="atestado_medico" not-null="true" />
-        </property>
-        <property name="avaliacaoQuantitativa" type="double">
-            <column name="avaliacao_quantitativa" precision="3" not-null="true" />
+        <property name="avaliacaoQuantitativa" type="int">
+            <column name="avaliacao_quantitativa" not-null="true" />
         </property>
         <property name="avaliacaoQualitativa" type="string">
             <column name="avaliacao_qualitativa" length="60" not-null="true" />
