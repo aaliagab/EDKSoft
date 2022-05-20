@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-04-2022 a las 00:39:56
+-- Tiempo de generación: 20-05-2022 a las 10:39:35
 -- Versión del servidor: 10.3.16-MariaDB
 -- Versión de PHP: 7.3.7
 
@@ -33,6 +33,16 @@ CREATE TABLE `acesso` (
   `nome` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `acesso`
+--
+
+INSERT INTO `acesso` (`id`, `nome`) VALUES
+(1, 'admin'),
+(2, 'director'),
+(3, 'professor'),
+(4, 'secretaria');
+
 -- --------------------------------------------------------
 
 --
@@ -45,6 +55,14 @@ CREATE TABLE `aluno` (
   `ficha_requerimento` varchar(255) NOT NULL,
   `cartao_vacina` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `aluno`
+--
+
+INSERT INTO `aluno` (`id`, `id_transporte`, `ficha_requerimento`, `cartao_vacina`) VALUES
+(8, 1, 'FGG44266', 'HSF28929'),
+(9, 1, 'KJN32637', 'JNG837747');
 
 -- --------------------------------------------------------
 
@@ -104,6 +122,13 @@ CREATE TABLE `bairro` (
   `id_municipio` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `bairro`
+--
+
+INSERT INTO `bairro` (`id`, `nome`, `id_municipio`) VALUES
+(1, 'Shisindo', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -115,6 +140,16 @@ CREATE TABLE `cargo` (
   `nome` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `cargo`
+--
+
+INSERT INTO `cargo` (`id`, `nome`) VALUES
+(1, 'Director'),
+(4, 'Instructor'),
+(2, 'Professor'),
+(3, 'Secretaria');
+
 -- --------------------------------------------------------
 
 --
@@ -125,6 +160,13 @@ CREATE TABLE `categoria` (
   `id` int(11) NOT NULL,
   `nome` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `categoria`
+--
+
+INSERT INTO `categoria` (`id`, `nome`) VALUES
+(1, 'VIP');
 
 -- --------------------------------------------------------
 
@@ -153,6 +195,15 @@ CREATE TABLE `funcionario` (
   `id_cargo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `funcionario`
+--
+
+INSERT INTO `funcionario` (`id`, `id_cargo`) VALUES
+(1, 1),
+(2, 2),
+(6, 4);
+
 -- --------------------------------------------------------
 
 --
@@ -177,6 +228,13 @@ CREATE TABLE `instructor` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `instructor`
+--
+
+INSERT INTO `instructor` (`id`) VALUES
+(6);
+
 -- --------------------------------------------------------
 
 --
@@ -188,6 +246,13 @@ CREATE TABLE `municipio` (
   `nome` varchar(50) COLLATE latin1_bin NOT NULL,
   `id_provincia` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
+--
+-- Volcado de datos para la tabla `municipio`
+--
+
+INSERT INTO `municipio` (`id`, `nome`, `id_provincia`) VALUES
+(1, 'Cuito', 2);
 
 -- --------------------------------------------------------
 
@@ -214,13 +279,26 @@ CREATE TABLE `pessoa` (
   `id` int(11) NOT NULL,
   `nome` varchar(60) NOT NULL,
   `sobrenome` varchar(60) NOT NULL,
-  `passaporte` varchar(60) NOT NULL,
+  `passaporte` varchar(60) DEFAULT NULL,
   `genero` varchar(60) NOT NULL,
   `data_nascimento` date NOT NULL,
   `email` varchar(120) DEFAULT NULL,
   `telefone` varchar(60) NOT NULL,
   `id_endereco` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `pessoa`
+--
+
+INSERT INTO `pessoa` (`id`, `nome`, `sobrenome`, `passaporte`, `genero`, `data_nascimento`, `email`, `telefone`, `id_endereco`) VALUES
+(1, 'Samuel', 'Jamba', 'K041376', 'Masculino', '2022-05-05', 'a@a.aa', '(+244)993-237-273', 1),
+(2, 'Josep', 'Mandiaco', 'K1234', 'Masculino', '2022-05-09', 'a@a.aa', '(+244)939-172-322', 2),
+(4, 'Michaella', 'Jackson', 'L34828', 'Femenino', '2022-05-09', 'm@m.mm', '(+244)934-512-217', 4),
+(5, 'Michaella', 'Jackson', 'L34828', 'Femenino', '2022-05-09', 'm@m.mm', '(+244)934-512-217', 5),
+(6, 'Michaella', 'Girkan Sofir', 'L176232', 'Femenino', '2022-05-09', 'm@m.mm', '(+244)923-723-727', 6),
+(8, 'George', 'Mazunda', '', 'Masculino', '2022-05-20', '', '(+244)981-637-272', 8),
+(9, 'Lusinda', 'Ferinha', '', 'Femenino', '2022-05-20', '', '(+244)981-637-272', 9);
 
 -- --------------------------------------------------------
 
@@ -232,6 +310,13 @@ CREATE TABLE `professor` (
   `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `professor`
+--
+
+INSERT INTO `professor` (`id`) VALUES
+(2);
+
 -- --------------------------------------------------------
 
 --
@@ -242,6 +327,14 @@ CREATE TABLE `provincia` (
   `id` int(11) NOT NULL,
   `nome` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `provincia`
+--
+
+INSERT INTO `provincia` (`id`, `nome`) VALUES
+(1, 'Luanda'),
+(2, 'Bié');
 
 -- --------------------------------------------------------
 
@@ -256,6 +349,21 @@ CREATE TABLE `residencia` (
   `num_casa` varchar(60) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `residencia`
+--
+
+INSERT INTO `residencia` (`id`, `id_bairro`, `rua`, `num_casa`) VALUES
+(1, 1, 'CFG', '11'),
+(2, 1, 'Capitango', '234'),
+(3, 1, 'Capitango', '234'),
+(4, 1, 'PedCuli', ''),
+(5, 1, 'PedCuli', '123'),
+(6, 1, 'Housua', ''),
+(7, 1, 'Housua', ''),
+(8, 1, 'Central Park', '345'),
+(9, 1, 'Central Park', '987');
+
 -- --------------------------------------------------------
 
 --
@@ -266,6 +374,14 @@ CREATE TABLE `tipo` (
   `id` int(11) NOT NULL,
   `nome` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tipo`
+--
+
+INSERT INTO `tipo` (`id`, `nome`) VALUES
+(1, 'Pratico'),
+(2, 'Teorico');
 
 -- --------------------------------------------------------
 
@@ -278,6 +394,13 @@ CREATE TABLE `tipo_inscricao` (
   `nome` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `tipo_inscricao`
+--
+
+INSERT INTO `tipo_inscricao` (`id`, `nome`) VALUES
+(1, 'Pessoal');
+
 -- --------------------------------------------------------
 
 --
@@ -288,6 +411,14 @@ CREATE TABLE `tipo_transporte` (
   `id` int(11) NOT NULL,
   `nome` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tipo_transporte`
+--
+
+INSERT INTO `tipo_transporte` (`id`, `nome`) VALUES
+(1, 'Ligeiro'),
+(2, 'Pesado');
 
 -- --------------------------------------------------------
 
@@ -306,6 +437,13 @@ CREATE TABLE `transporte` (
   `id_tipo_trans` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `transporte`
+--
+
+INSERT INTO `transporte` (`id`, `peso`, `marca`, `modelo`, `cor`, `matricula`, `num_circulacao`, `id_tipo_trans`) VALUES
+(1, 400.75, 'HYUNDAI', 'H09', 'VERMELHO', 'B041376HJ', '67RT54', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -319,6 +457,14 @@ CREATE TABLE `usuario` (
   `id_acesso` int(11) NOT NULL,
   `id_funcionario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`id`, `nome`, `senha`, `id_acesso`, `id_funcionario`) VALUES
+(1, 'admin', '2c978d261a17e63ffc5b87f58b2e237fbe88a94ef1113cd76caa9453d4123c7310cde5fb2048dd5c88ca36cb18c520060b7b58027dd8177499860b32d7f54705', 1, NULL),
+(2, 'director', '8de1915069b1910852fe83683260e09b9fc5f7d0aeaa07aab6786d9dbba7db72636a0b323e81fdc118c30fae211496fc4a3d17a502514d5db73c1a17ff4456fa', 2, 1);
 
 --
 -- Índices para tablas volcadas
@@ -372,7 +518,8 @@ ALTER TABLE `bairro`
 -- Indices de la tabla `cargo`
 --
 ALTER TABLE `cargo`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome` (`nome`);
 
 --
 -- Indices de la tabla `categoria`
@@ -492,7 +639,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `acesso`
 --
 ALTER TABLE `acesso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `aluno_aula`
@@ -516,19 +663,19 @@ ALTER TABLE `aula`
 -- AUTO_INCREMENT de la tabla `bairro`
 --
 ALTER TABLE `bairro`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cargo`
 --
 ALTER TABLE `cargo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `exame`
@@ -546,7 +693,7 @@ ALTER TABLE `inscricao`
 -- AUTO_INCREMENT de la tabla `municipio`
 --
 ALTER TABLE `municipio`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `pagamento`
@@ -558,49 +705,49 @@ ALTER TABLE `pagamento`
 -- AUTO_INCREMENT de la tabla `pessoa`
 --
 ALTER TABLE `pessoa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `provincia`
 --
 ALTER TABLE `provincia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `residencia`
 --
 ALTER TABLE `residencia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo`
 --
 ALTER TABLE `tipo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_inscricao`
 --
 ALTER TABLE `tipo_inscricao`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_transporte`
 --
 ALTER TABLE `tipo_transporte`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `transporte`
 --
 ALTER TABLE `transporte`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
@@ -667,7 +814,7 @@ ALTER TABLE `inscricao`
 -- Filtros para la tabla `instructor`
 --
 ALTER TABLE `instructor`
-  ADD CONSTRAINT `instructor_ibfk_1` FOREIGN KEY (`id`) REFERENCES `pessoa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `instructor_ibfk_1` FOREIGN KEY (`id`) REFERENCES `funcionario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `municipio`
@@ -691,7 +838,7 @@ ALTER TABLE `pessoa`
 -- Filtros para la tabla `professor`
 --
 ALTER TABLE `professor`
-  ADD CONSTRAINT `professor_ibfk_1` FOREIGN KEY (`id`) REFERENCES `pessoa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `professor_ibfk_1` FOREIGN KEY (`id`) REFERENCES `funcionario` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `residencia`
