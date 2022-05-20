@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-05-2022 a las 10:39:35
+-- Tiempo de generación: 21-05-2022 a las 00:37:25
 -- Versión del servidor: 10.3.16-MariaDB
 -- Versión de PHP: 7.3.7
 
@@ -41,7 +41,8 @@ INSERT INTO `acesso` (`id`, `nome`) VALUES
 (1, 'admin'),
 (2, 'director'),
 (3, 'professor'),
-(4, 'secretaria');
+(4, 'secretaria'),
+(5, 'instrutor');
 
 -- --------------------------------------------------------
 
@@ -76,6 +77,13 @@ CREATE TABLE `aluno_aula` (
   `id_aula` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `aluno_aula`
+--
+
+INSERT INTO `aluno_aula` (`id`, `id_aluno`, `id_aula`) VALUES
+(3, 9, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -86,12 +94,16 @@ CREATE TABLE `aluno_exame` (
   `id` int(11) NOT NULL,
   `id_aluno` int(11) NOT NULL,
   `id_exame` int(11) NOT NULL,
-  `documento` varchar(255) NOT NULL,
-  `registro_criminal` varchar(255) NOT NULL,
-  `atestado_medico` varchar(255) NOT NULL,
-  `avaliacao_quantitativa` double(3,2) NOT NULL,
+  `avaliacao_quantitativa` int(11) NOT NULL,
   `avaliacao_qualitativa` varchar(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `aluno_exame`
+--
+
+INSERT INTO `aluno_exame` (`id`, `id_aluno`, `id_exame`, `avaliacao_quantitativa`, `avaliacao_qualitativa`) VALUES
+(2, 9, 1, 16, 'R');
 
 -- --------------------------------------------------------
 
@@ -102,13 +114,20 @@ CREATE TABLE `aluno_exame` (
 CREATE TABLE `aula` (
   `id` int(11) NOT NULL,
   `id_professor` int(11) NOT NULL,
-  `sumario` varchar(255) NOT NULL,
+  `sumario` text NOT NULL,
   `date_aula` date NOT NULL,
   `id_tipo` int(11) NOT NULL,
   `numero` int(10) NOT NULL,
   `hora_inicio` varchar(5) NOT NULL,
   `duracao` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `aula`
+--
+
+INSERT INTO `aula` (`id`, `id_professor`, `sumario`, `date_aula`, `id_tipo`, `numero`, `hora_inicio`, `duracao`) VALUES
+(1, 2, 'Condução 3ra\nLicença\ne outros', '2022-05-31', 1, 1, '12:45', '01:00');
 
 -- --------------------------------------------------------
 
@@ -184,6 +203,13 @@ CREATE TABLE `exame` (
   `duracao` varchar(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `exame`
+--
+
+INSERT INTO `exame` (`id`, `id_instrutor`, `data`, `id_tipo`, `id_categoria`, `hora`, `duracao`) VALUES
+(1, 6, '2022-05-20', 1, 1, '14:30', '02:00');
+
 -- --------------------------------------------------------
 
 --
@@ -202,6 +228,7 @@ CREATE TABLE `funcionario` (
 INSERT INTO `funcionario` (`id`, `id_cargo`) VALUES
 (1, 1),
 (2, 2),
+(10, 3),
 (6, 4);
 
 -- --------------------------------------------------------
@@ -217,6 +244,14 @@ CREATE TABLE `inscricao` (
   `id_tipo_inscricao` int(11) NOT NULL,
   `id_categoria` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `inscricao`
+--
+
+INSERT INTO `inscricao` (`id`, `id_aluno`, `data`, `id_tipo_inscricao`, `id_categoria`) VALUES
+(1, 9, '2022-05-20', 1, 1),
+(2, 8, '2022-05-20', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -257,21 +292,6 @@ INSERT INTO `municipio` (`id`, `nome`, `id_provincia`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `pagamento`
---
-
-CREATE TABLE `pagamento` (
-  `id` int(11) NOT NULL,
-  `id_inscricao` int(11) NOT NULL,
-  `data` date NOT NULL,
-  `valor` double(10,2) NOT NULL,
-  `modo` varchar(60) NOT NULL,
-  `observacao` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `pessoa`
 --
 
@@ -298,7 +318,8 @@ INSERT INTO `pessoa` (`id`, `nome`, `sobrenome`, `passaporte`, `genero`, `data_n
 (5, 'Michaella', 'Jackson', 'L34828', 'Femenino', '2022-05-09', 'm@m.mm', '(+244)934-512-217', 5),
 (6, 'Michaella', 'Girkan Sofir', 'L176232', 'Femenino', '2022-05-09', 'm@m.mm', '(+244)923-723-727', 6),
 (8, 'George', 'Mazunda', '', 'Masculino', '2022-05-20', '', '(+244)981-637-272', 8),
-(9, 'Lusinda', 'Ferinha', '', 'Femenino', '2022-05-20', '', '(+244)981-637-272', 9);
+(9, 'Lusinda', 'Ferinha', '', 'Femenino', '2022-05-20', '', '(+244)981-637-272', 9),
+(10, 'Frederica', 'Chamba', '', 'Femenino', '2022-05-20', 'a@a.aa', '(+244)986-237-232', 10);
 
 -- --------------------------------------------------------
 
@@ -362,7 +383,8 @@ INSERT INTO `residencia` (`id`, `id_bairro`, `rua`, `num_casa`) VALUES
 (6, 1, 'Housua', ''),
 (7, 1, 'Housua', ''),
 (8, 1, 'Central Park', '345'),
-(9, 1, 'Central Park', '987');
+(9, 1, 'Central Park', '987'),
+(10, 1, 'Jota', '');
 
 -- --------------------------------------------------------
 
@@ -464,7 +486,10 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`id`, `nome`, `senha`, `id_acesso`, `id_funcionario`) VALUES
 (1, 'admin', '2c978d261a17e63ffc5b87f58b2e237fbe88a94ef1113cd76caa9453d4123c7310cde5fb2048dd5c88ca36cb18c520060b7b58027dd8177499860b32d7f54705', 1, NULL),
-(2, 'director', '8de1915069b1910852fe83683260e09b9fc5f7d0aeaa07aab6786d9dbba7db72636a0b323e81fdc118c30fae211496fc4a3d17a502514d5db73c1a17ff4456fa', 2, 1);
+(2, 'director', '8de1915069b1910852fe83683260e09b9fc5f7d0aeaa07aab6786d9dbba7db72636a0b323e81fdc118c30fae211496fc4a3d17a502514d5db73c1a17ff4456fa', 2, 1),
+(3, 'professor', 'a07935bbb9b78e72767d6f19987ace2e5cedcd2899d329173f69f6441d10d3a5dcd4f56550e36ce082dfe4a2ce93c5758f0aa88373fcaa00e97709fa27ca20a1', 3, 2),
+(4, 'instrutor', '83710f4481135056c6ddf5a363e58d1df54328842b665732e26947625f2a03a859a56d69b13ff4fdd84e3e82d2efe791104c34629125056c71b135715d41c403', 5, 6),
+(5, 'secretaria', 'ba8db23cb9855e57e2da11ce7ddc65439260973114f58a8b7ac8a4a659e125eee9eb8c8c95812f345576cddbe618bf4766759ed83a8fb6281c75e3113c7c8d57', 4, 10);
 
 --
 -- Índices para tablas volcadas
@@ -566,13 +591,6 @@ ALTER TABLE `municipio`
   ADD KEY `id_provincia` (`id_provincia`);
 
 --
--- Indices de la tabla `pagamento`
---
-ALTER TABLE `pagamento`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_inscricao` (`id_inscricao`);
-
---
 -- Indices de la tabla `pessoa`
 --
 ALTER TABLE `pessoa`
@@ -639,25 +657,25 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `acesso`
 --
 ALTER TABLE `acesso`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `aluno_aula`
 --
 ALTER TABLE `aluno_aula`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `aluno_exame`
 --
 ALTER TABLE `aluno_exame`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `aula`
 --
 ALTER TABLE `aula`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `bairro`
@@ -681,13 +699,13 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `exame`
 --
 ALTER TABLE `exame`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `inscricao`
 --
 ALTER TABLE `inscricao`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `municipio`
@@ -696,16 +714,10 @@ ALTER TABLE `municipio`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `pagamento`
---
-ALTER TABLE `pagamento`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `pessoa`
 --
 ALTER TABLE `pessoa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `provincia`
@@ -717,7 +729,7 @@ ALTER TABLE `provincia`
 -- AUTO_INCREMENT de la tabla `residencia`
 --
 ALTER TABLE `residencia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo`
@@ -747,7 +759,7 @@ ALTER TABLE `transporte`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -821,12 +833,6 @@ ALTER TABLE `instructor`
 --
 ALTER TABLE `municipio`
   ADD CONSTRAINT `municipio_ibfk_1` FOREIGN KEY (`id_provincia`) REFERENCES `provincia` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `pagamento`
---
-ALTER TABLE `pagamento`
-  ADD CONSTRAINT `pagamento_ibfk_1` FOREIGN KEY (`id_inscricao`) REFERENCES `inscricao` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `pessoa`

@@ -174,7 +174,6 @@ public class InscricaoDialog extends javax.swing.JDialog {
         data = new com.toedter.calendar.JDateChooser();
         jLabel7 = new javax.swing.JLabel();
         comboCat = new javax.swing.JComboBox<>();
-        atribuir_aluno = new javax.swing.JButton();
         comboAluno = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -252,15 +251,6 @@ public class InscricaoDialog extends javax.swing.JDialog {
 
         jLabel7.setText("Categoria:");
 
-        atribuir_aluno.setText("Fazer pagamento");
-        atribuir_aluno.setToolTipText("Actualizar dados");
-        atribuir_aluno.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        atribuir_aluno.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                atribuir_alunoActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -273,9 +263,7 @@ public class InscricaoDialog extends javax.swing.JDialog {
                         .addGap(14, 14, 14)
                         .addComponent(jButton4)
                         .addGap(14, 14, 14)
-                        .addComponent(botao_actualizar1)
-                        .addGap(18, 18, 18)
-                        .addComponent(atribuir_aluno))
+                        .addComponent(botao_actualizar1))
                     .addComponent(busca_nome, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -314,9 +302,7 @@ public class InscricaoDialog extends javax.swing.JDialog {
                         .addGap(63, 63, 63)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(botao_actualizar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(atribuir_aluno, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(botao_actualizar1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel7)
@@ -449,23 +435,6 @@ public class InscricaoDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_botao_actualizar1ActionPerformed
 
-    private void atribuir_alunoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atribuir_alunoActionPerformed
-        int[] rows = tabela.getSelectedRows();
-        if (rows.length > 0) {
-            if (rows.length == 1) {
-                Inscricao util = list_atual.get(rows[0]);
-//                AlunoInscricaoDialog obj = new AlunoInscricaoDialog(pai, false);
-//                obj.setInscricao(util);
-//                obj.setVisible(true);
-//                dispose();
-            } else {
-                pai.control.messageUmaLinha();
-            }
-        } else {
-            pai.control.messageSelecaoEditar();
-        }
-    }//GEN-LAST:event_atribuir_alunoActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -518,7 +487,6 @@ public class InscricaoDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton atribuir_aluno;
     private javax.swing.JButton botao_actualizar1;
     private javax.swing.JTextField busca_nome;
     private javax.swing.JComboBox<String> combo;

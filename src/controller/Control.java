@@ -5,7 +5,6 @@ import dao.AlunoExameDAOImplement;
 import dao.ProfessorDAOImplement;
 import dao.ResidenciaDAOImplement;
 import dao.AulaDAOImplement;
-import dao.PagamentoDAOImplement;
 import dao.AlunoAulaDAOImplement;
 import dao.MunicipioDAOImplement;
 import dao.InstructorDAOImplement;
@@ -35,7 +34,6 @@ public class Control {
     private ProfessorDAOImplement ProfessorDAO;
     private ResidenciaDAOImplement ResidenciaDAO;
     private AulaDAOImplement AulaDAO;
-    private PagamentoDAOImplement PagamentoDAO;
     private AlunoAulaDAOImplement AlunoAulaDAO;
     private MunicipioDAOImplement MunicipioDAO;
     private InstructorDAOImplement InstructorDAO;
@@ -63,7 +61,6 @@ public class Control {
         ProfessorDAO = new ProfessorDAOImplement();
         ResidenciaDAO = new ResidenciaDAOImplement();
         AulaDAO = new AulaDAOImplement();
-        PagamentoDAO = new PagamentoDAOImplement();
         AlunoAulaDAO = new AlunoAulaDAOImplement();
         MunicipioDAO = new MunicipioDAOImplement();
         InstructorDAO = new InstructorDAOImplement();
@@ -104,10 +101,6 @@ public class Control {
 
     public AulaDAOImplement getAulaDAO() {
         return AulaDAO;
-    }
-
-    public PagamentoDAOImplement getPagamentoDAO() {
-        return PagamentoDAO;
     }
 
     public AlunoAulaDAOImplement getAlunoAulaDAO() {

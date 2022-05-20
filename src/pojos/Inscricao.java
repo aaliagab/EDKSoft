@@ -17,24 +17,15 @@ public class Inscricao  implements java.io.Serializable {
      private Categoria categoria;
      private TipoInscricao tipoInscricao;
      private Date data;
-     private Set<Pagamento> pagamentos = new HashSet<Pagamento>(0);
 
     public Inscricao() {
     }
 
-	
     public Inscricao(Aluno aluno, Categoria categoria, TipoInscricao tipoInscricao, Date data) {
-        this.aluno = aluno;
-        this.categoria = categoria;
-        this.tipoInscricao = tipoInscricao;
-        this.data = data;
-    }
-    public Inscricao(Aluno aluno, Categoria categoria, TipoInscricao tipoInscricao, Date data, Set<Pagamento> pagamentos) {
        this.aluno = aluno;
        this.categoria = categoria;
        this.tipoInscricao = tipoInscricao;
        this.data = data;
-       this.pagamentos = pagamentos;
     }
    
     public Integer getId() {
@@ -72,16 +63,6 @@ public class Inscricao  implements java.io.Serializable {
     public void setData(Date data) {
         this.data = data;
     }
-    public Set<Pagamento> getPagamentos() {
-        return this.pagamentos;
-    }
-    
-    public void setPagamentos(Set<Pagamento> pagamentos) {
-        this.pagamentos = pagamentos;
-    }
-
-
-
 
 }
 

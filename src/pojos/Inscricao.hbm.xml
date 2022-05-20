@@ -20,11 +20,6 @@
         <property name="data" type="date">
             <column name="data" length="10" not-null="true" />
         </property>
-        <set name="pagamentos" table="pagamento" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_inscricao" not-null="true" />
-            </key>
-            <one-to-many class="pojos.Pagamento" />
-        </set>
+        
     </class>
 </hibernate-mapping>

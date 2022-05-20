@@ -52,7 +52,6 @@ Contributor(s):
     <mapping resource="pojos/Professor.hbm.xml"/>
     <mapping resource="pojos/Residencia.hbm.xml"/>
     <mapping resource="pojos/Aula.hbm.xml"/>
-    <mapping resource="pojos/Pagamento.hbm.xml"/>
     <mapping resource="pojos/AlunoAula.hbm.xml"/>
     <mapping resource="pojos/Municipio.hbm.xml"/>
     <mapping resource="pojos/Usuario.hbm.xml"/>
