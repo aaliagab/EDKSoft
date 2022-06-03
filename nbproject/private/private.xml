@@ -3,11 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/view/ExameDialog.java</file>
             <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/view/Main.java</file>
-            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/view/InscricaoDialog.java</file>
-            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/hibernate.cfg.xml</file>
-            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/view/AlunoDialog.java</file>
+            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/pojos/Aula.java</file>
+            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/reports/AulasProfessorReport.java</file>
+            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/reports/aulas_report.jrxml</file>
+            <file>file:/D:/WORKS/TESIS/32%20Conducao%20ED-K/EDKSoft/src/view/AulasProfessor.java</file>
         </group>
     </open-files>
 </project-private>

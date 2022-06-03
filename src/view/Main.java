@@ -5,6 +5,9 @@
  */
 package view;
 
+import backup.BackupRestoreDialog;
+import backup.ConexionDialog;
+import backup.PathBackupDialog;
 import controller.Control;
 import controller.Toast;
 import criptographia.Encriptado;
@@ -28,7 +31,9 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 import pojos.Acesso;
+import pojos.Inscricao;
 import pojos.Usuario;
+import reports.InscricoesReport;
 
 /**
  *
@@ -273,6 +278,10 @@ public class Main extends javax.swing.JFrame {
         menuSeguranca = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        menuSeguranca1 = new javax.swing.JMenu();
+        menuItemConfigBackup = new javax.swing.JMenuItem();
+        menuItemBackup = new javax.swing.JMenuItem();
+        menuItemRestoreBackup = new javax.swing.JMenuItem();
         menuTipos = new javax.swing.JMenu();
         menuItemTipo = new javax.swing.JMenuItem();
         menuItemTipoTransporte = new javax.swing.JMenuItem();
@@ -331,6 +340,41 @@ public class Main extends javax.swing.JFrame {
             }
         });
         menuSeguranca.add(jMenuItem1);
+
+        menuSeguranca1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_data_protection_28px.png"))); // NOI18N
+        menuSeguranca1.setText("BD");
+
+        menuItemConfigBackup.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        menuItemConfigBackup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_administrative_tools_28px.png"))); // NOI18N
+        menuItemConfigBackup.setText("Configurações");
+        menuItemConfigBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemConfigBackupActionPerformed(evt);
+            }
+        });
+        menuSeguranca1.add(menuItemConfigBackup);
+
+        menuItemBackup.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        menuItemBackup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_add_database_28px.png"))); // NOI18N
+        menuItemBackup.setText("Backup");
+        menuItemBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemBackupActionPerformed(evt);
+            }
+        });
+        menuSeguranca1.add(menuItemBackup);
+
+        menuItemRestoreBackup.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        menuItemRestoreBackup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_database_restore_28px.png"))); // NOI18N
+        menuItemRestoreBackup.setText("Restauracão");
+        menuItemRestoreBackup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemRestoreBackupActionPerformed(evt);
+            }
+        });
+        menuSeguranca1.add(menuItemRestoreBackup);
+
+        menuSeguranca.add(menuSeguranca1);
 
         jMenu1.add(menuSeguranca);
 
@@ -542,7 +586,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_pdf_28px_3.png"))); // NOI18N
-        jMenuItem16.setText("Pautas");
+        jMenuItem16.setText("Pautas de exame");
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem16ActionPerformed(evt);
@@ -552,7 +596,7 @@ public class Main extends javax.swing.JFrame {
 
         jMenuItem17.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/icons8_pdf_28px_3.png"))); // NOI18N
-        jMenuItem17.setText("Aulas");
+        jMenuItem17.setText("Aulas do professor");
         jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem17ActionPerformed(evt);
@@ -568,13 +612,15 @@ public class Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1017, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGap(0, 2, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 3, Short.MAX_VALUE))
         );
 
         pack();
@@ -638,60 +684,44 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemFuncionarioActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
-//        try {
-//            List<ResidentesReport> objs = new ArrayList<>();
-//            List<Emigrante> dist = control.getEmigranteDAO().findAll();
-//            for (Emigrante obj : dist) {
-//                if(obj.getCategoriaMigratoria().getTipoVisto().getNome().equals("Autorização de Residência"))
-//                objs.add(new ResidentesReport(obj));
-//            }
-//            try {
-//                JasperReport reporte = null;
-//                URL path = this.getClass().getResource("/reports/autorizacao_report_geral.jasper");
-//                Map<String, Object> parametros = new HashMap<>();
-//                parametros.put("logo", this.getClass().getResource("/resource/logo.jpg").toString());
-//                reporte = (JasperReport) JRLoader.loadObject(path);
-//                JasperPrint jprint = JasperFillManager.fillReport(reporte, parametros, new JRBeanCollectionDataSource(objs));
-//                JasperViewer jviewer = new JasperViewer(jprint, false);
-//                jviewer.setVisible(true);
-//                jviewer.setTitle("autorizacao_report_geral");
-//
-//            } catch (Exception e) {
-//                msg = new Toast(e.getMessage(), 2000);
-//                msg.showToast();
-//            }
-//        } catch (BussinessException ex) {
-//            control.messageErroBussiness(ex);
-//        }
+        try {
+            List<InscricoesReport> objs = new ArrayList<>();
+            List<Inscricao> dist = control.getInscricaoDAO().findAll();
+            for (Inscricao obj : dist) {
+                objs.add(new InscricoesReport(obj));
+            }
+            try {
+                JasperReport reporte = null;
+                URL path = this.getClass().getResource("/reports/inscricoes_report.jasper");
+                Map<String, Object> parametros = new HashMap<>();
+                parametros.put("logo", this.getClass().getResource("/resource/logo.jpg").toString());
+                reporte = (JasperReport) JRLoader.loadObject(path);
+                JasperPrint jprint = JasperFillManager.fillReport(reporte, parametros, new JRBeanCollectionDataSource(objs));
+                JasperViewer jviewer = new JasperViewer(jprint, false);
+                jviewer.setVisible(true);
+                jviewer.setTitle("inscricoes_report");
+
+            } catch (Exception e) {
+                msg = new Toast(e.getMessage(), 2000);
+                msg.showToast();
+            }
+        } catch (BussinessException ex) {
+            control.messageErroBussiness(ex);
+        }
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-//      try {
-//            List<VistoPermanenciaReport> objs = new ArrayList<>();
-//            List<Emigrante> dist = control.getEmigranteDAO().findAll();
-//            for (Emigrante obj : dist) {
-//                if(obj.getCategoriaMigratoria().getTipoVisto().getNome().equals("Visto de Permanência Temporária"))
-//                objs.add(new VistoPermanenciaReport(obj));
-//            }
-//            try {
-//                JasperReport reporte = null;
-//                URL path = this.getClass().getResource("/reports/permanencia_report_geral.jasper");
-//                Map<String, Object> parametros = new HashMap<>();
-//                parametros.put("titulo", "VISTO DE PERMANÊNCIA TEMPORÁRIA");
-//                parametros.put("logo", this.getClass().getResource("/resource/logo.jpg").toString());
-//                reporte = (JasperReport) JRLoader.loadObject(path);
-//                JasperPrint jprint = JasperFillManager.fillReport(reporte, parametros, new JRBeanCollectionDataSource(objs));
-//                JasperViewer jviewer = new JasperViewer(jprint, false);
-//                jviewer.setVisible(true);
-//                jviewer.setTitle("permanencia_report_geral");
-//
-//            } catch (Exception e) {
-//                msg = new Toast(e.getMessage(), 2000);
-//                msg.showToast();
-//            }
-//        } catch (BussinessException ex) {
-//            control.messageErroBussiness(ex);
-//        }
+        try {
+            if (control.getAlunoExameDAO().findAll().size() == 0) {
+                msg = new Toast("Ainda não temos exames com pautas.", 2000);
+                msg.showToast();
+            } else {
+                PautasExame obj = new PautasExame(this, false);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void menuItemExamesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemExamesActionPerformed
@@ -845,8 +875,33 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemInstrutoresActionPerformed
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
-        // TODO add your handling code here:
+        try {
+            if (control.getAulaDAO().findAll().size() == 0) {
+                msg = new Toast("Ainda não temos aulas cadastradas.", 2000);
+                msg.showToast();
+            } else {
+                AulasProfessor obj = new AulasProfessor(this, false);
+                obj.setVisible(true);
+            }
+        } catch (BussinessException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }//GEN-LAST:event_jMenuItem17ActionPerformed
+
+    private void menuItemConfigBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConfigBackupActionPerformed
+        ConexionDialog c = new ConexionDialog(this, true);
+        c.show();
+    }//GEN-LAST:event_menuItemConfigBackupActionPerformed
+
+    private void menuItemBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemBackupActionPerformed
+        PathBackupDialog pb = new PathBackupDialog(this, true);
+        pb.show();
+    }//GEN-LAST:event_menuItemBackupActionPerformed
+
+    private void menuItemRestoreBackupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemRestoreBackupActionPerformed
+        BackupRestoreDialog br = new BackupRestoreDialog(this, true);
+        br.show();
+    }//GEN-LAST:event_menuItemRestoreBackupActionPerformed
 
     /**
      * @param args the command line arguments
@@ -903,9 +958,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu menuImpressoes;
     private javax.swing.JMenuItem menuItemAlunos;
     private javax.swing.JMenuItem menuItemAulas;
+    private javax.swing.JMenuItem menuItemBackup;
     private javax.swing.JMenuItem menuItemBairros;
     private javax.swing.JMenuItem menuItemCargos;
     private javax.swing.JMenuItem menuItemCategoria;
+    private javax.swing.JMenuItem menuItemConfigBackup;
     private javax.swing.JMenuItem menuItemExames;
     private javax.swing.JMenuItem menuItemFuncionario;
     private javax.swing.JMenuItem menuItemInscricoes;
@@ -913,12 +970,14 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemMunicipio;
     private javax.swing.JMenuItem menuItemProfessores;
     private javax.swing.JMenuItem menuItemProvincia;
+    private javax.swing.JMenuItem menuItemRestoreBackup;
     private javax.swing.JMenuItem menuItemTipo;
     private javax.swing.JMenuItem menuItemTipoInscricao;
     private javax.swing.JMenuItem menuItemTipoTransporte;
     private javax.swing.JMenuItem menuItemTransportes;
     private javax.swing.JMenu menuPessoas;
     private javax.swing.JMenu menuSeguranca;
+    private javax.swing.JMenu menuSeguranca1;
     private javax.swing.JMenu menuTipos;
     // End of variables declaration//GEN-END:variables
 }
